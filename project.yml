@@ -1,6 +1,6 @@
 name: OpenSearch
 options:
-  bundleIdPrefix: ca.theboldbureau
+  bundleIdPrefix: ca.loganhawkins
   deploymentTarget:
     macOS: "26.0"
 settings:
@@ -18,12 +18,14 @@ targets:
     settings:
       base:
         PRODUCT_NAME: Open Search
-        PRODUCT_BUNDLE_IDENTIFIER: ca.theboldbureau.opensearch
+        PRODUCT_BUNDLE_IDENTIFIER: ca.loganhawkins.opensearch
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: Open Search
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
         INFOPLIST_KEY_NSHumanReadableCopyright: "Open Search"
-        ENABLE_APP_SANDBOX: NO
+        ENABLE_APP_SANDBOX: NO   # local installs run unsandboxed; Tools/testflight.sh turns it on
+        CODE_SIGN_ENTITLEMENTS: Config/OpenSearch.entitlements
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         ENABLE_HARDENED_RUNTIME: NO
         CODE_SIGN_IDENTITY: "-"
         CODE_SIGN_STYLE: Manual
