@@ -74,7 +74,7 @@ struct ToolScaffold<FormContent: View, ResultContent: View>: View {
 
     private var resultsPanel: some View {
         VStack(spacing: 0) {
-            if runner.phase == .loaded || runner.error != nil && !runner.pages.isEmpty { toolbar }
+            if runner.phase == .loaded || (runner.error != nil && !runner.pages.isEmpty) { toolbar }
             content
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -159,7 +159,7 @@ struct ToolScaffold<FormContent: View, ResultContent: View>: View {
     private var loadingState: some View {
         VStack(spacing: 16) {
             ProgressView().controlSize(.large)
-            Text("\(tool.verb)ing…".replacingOccurrences(of: "eing…", with: "ing…"))
+            Text(tool.loadingLabel)
                 .font(Brand.displayItalic(24)).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

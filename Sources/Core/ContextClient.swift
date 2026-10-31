@@ -5,7 +5,6 @@ struct APIResult {
     var requestID: String?
     var consumed: Int
     var remaining: Int?
-    var status: Int
     var elapsed: TimeInterval
 }
 
@@ -79,7 +78,7 @@ final class ContextClient {
                 return APIResult(
                     json: json, requestID: json["request_id"].nonEmpty ?? rid,
                     consumed: meta["credits_consumed"].int ?? 0, remaining: meta["credits_remaining"].int,
-                    status: http.statusCode, elapsed: Date().timeIntervalSince(started))
+                    elapsed: Date().timeIntervalSince(started))
             }
 
             if attempt < 2, [408, 429, 500, 502, 503, 504].contains(http.statusCode) {

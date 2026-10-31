@@ -137,23 +137,12 @@ extension Color {
             func chan(_ v: Double) -> Double { v <= 1 && s.contains("%") ? v : v / 255 }
             self = Color(.sRGB, red: chan(a0), green: chan(a1), blue: chan(a2), opacity: alpha)
         } else if name.hasPrefix("hsl") {
-            self = Color(hue: (a0.truncatingRemainder(dividingBy: 360)) / 360, saturation: a1, brightness: 0, opacity: alpha)
-                .hslAdjusted(h: a0, s: a1, l: a2, a: alpha)
+            // SwiftUI takes HSB, so convert from HSL first.
+            let v = a2 + a1 * min(a2, 1 - a2)
+            let sat = v == 0 ? 0 : 2 * (1 - a2 / v)
+            self = Color(hue: (a0.truncatingRemainder(dividingBy: 360)) / 360, saturation: sat, brightness: v, opacity: alpha)
         } else {
             return nil
         }
-    }
-
-    fileprivate func hslAdjusted(h: Double, s: Double, l: Double, a: Double) -> Color {
-        let hue = (h.truncatingRemainder(dividingBy: 360)) / 360
-        let v = l + s * min(l, 1 - l)
-        let sat = v == 0 ? 0 : 2 * (1 - l / v)
-        return Color(hue: hue, saturation: sat, brightness: v, opacity: a)
-    }
-
-    /// `#RRGGBB` for display and copying.
-    var hexString: String? {
-        guard let c = NSColor(self).usingColorSpace(.sRGB) else { return nil }
-        return String(format: "#%02X%02X%02X", Int(round(c.redComponent * 255)), Int(round(c.greenComponent * 255)), Int(round(c.blueComponent * 255)))
     }
 }

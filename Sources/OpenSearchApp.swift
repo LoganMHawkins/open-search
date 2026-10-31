@@ -6,10 +6,12 @@ struct OpenSearchApp: App {
 
     init() {
         Brand.registerFonts()
+        #if DEBUG
         if let i = CommandLine.arguments.firstIndex(of: "--export-icon"), CommandLine.arguments.indices.contains(i + 1) {
             let dir = CommandLine.arguments[i + 1]
             DispatchQueue.main.async { IconExporter.run(into: dir) }
         }
+        #endif
     }
 
     var body: some Scene {

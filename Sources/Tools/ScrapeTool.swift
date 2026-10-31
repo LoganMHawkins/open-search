@@ -311,7 +311,7 @@ struct ScrapeResult: View {
                     ForEach(Array(m["headings"].list.prefix(60).enumerated()), id: \.offset) { _, h in
                         Text(h["text"].nonEmpty ?? "")
                             .font(h["level"].int == 1 ? .headline : .callout)
-                            .foregroundStyle(h["level"].int ?? 2 <= 2 ? Color.primary : Color.secondary)
+                            .foregroundStyle((h["level"].int ?? 2) <= 2 ? Color.primary : Color.secondary)
                             .padding(.leading, CGFloat(max((h["level"].int ?? 1) - 1, 0)) * 14)
                     }
                 }
@@ -347,11 +347,12 @@ struct SourcePanel: View {
 struct ScreenshotPanel: View {
     let dataURI: String
 
-    private var image: NSImage? {
-        guard let comma = dataURI.firstIndex(of: ","),
-              let data = Data(base64Encoded: String(dataURI[dataURI.index(after: comma)...])) else { return nil }
-        return NSImage(data: data)
+    private var data: Data? {
+        guard let comma = dataURI.firstIndex(of: ",") else { return nil }
+        return Data(base64Encoded: String(dataURI[dataURI.index(after: comma)...]))
     }
+
+    private var image: NSImage? { data.flatMap { NSImage(data: $0) } }
 
     var body: some View {
         if let image {
@@ -360,7 +361,7 @@ struct ScreenshotPanel: View {
                     SectionLabel("Screenshot")
                     Text("\(Int(image.size.width)) × \(Int(image.size.height))").font(.caption).foregroundStyle(.tertiary)
                     Spacer()
-                    Button { save(image) } label: { Label("Save…", systemImage: "square.and.arrow.down") }
+                    Button { save() } label: { Label("Save…", systemImage: "square.and.arrow.down") }
                         .buttonStyle(.softGlass).controlSize(.small)
                 }
                 Image(nsImage: image).resizable().scaledToFit()
@@ -372,13 +373,11 @@ struct ScreenshotPanel: View {
         }
     }
 
-    private func save(_ image: NSImage) {
+    private func save() {
         let panel = NSSavePanel()
         let ext = dataURI.contains("image/jpeg") ? "jpg" : dataURI.contains("image/webp") ? "webp" : "png"
         panel.nameFieldStringValue = "screenshot.\(ext)"
-        guard panel.runModal() == .OK, let url = panel.url,
-              let comma = dataURI.firstIndex(of: ","),
-              let data = Data(base64Encoded: String(dataURI[dataURI.index(after: comma)...])) else { return }
+        guard panel.runModal() == .OK, let url = panel.url, let data else { return }
         try? data.write(to: url)
     }
 }

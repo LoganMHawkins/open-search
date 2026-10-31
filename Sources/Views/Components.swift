@@ -243,10 +243,10 @@ struct Avatar: View {
     }
 
     private var initials: some View {
-        let parts = name.split(separator: " ").prefix(2).compactMap { $0.first }
+        let letters = String(name.split(separator: " ").prefix(2).compactMap { $0.first }).uppercased()
         return ZStack {
             Brand.gradient.opacity(0.9)
-            Text(String(parts).uppercased().isEmpty ? "?" : String(parts).uppercased())
+            Text(letters.isEmpty ? "?" : letters)
                 .font(Brand.display(size * 0.42))
                 .foregroundStyle(.white)
         }

@@ -172,7 +172,7 @@ final class ToolRunner: ObservableObject {
     #if DEBUG
     func loadDemo(_ json: JSON) {
         pages = [APIResult(json: json, requestID: "demo", consumed: json["key_metadata"]["credits_consumed"].int ?? 0,
-                           remaining: json["key_metadata"]["credits_remaining"].int, status: 200, elapsed: 0.8)]
+                           remaining: json["key_metadata"]["credits_remaining"].int, elapsed: 0.8)]
         nextCursor = json["next_cursor"].nonEmpty
         phase = .loaded
     }
@@ -182,15 +182,6 @@ final class ToolRunner: ObservableObject {
         task?.cancel()
         loadingMore = false
         if phase == .loading { phase = pages.isEmpty ? .idle : .loaded }
-    }
-
-    func clear() {
-        task?.cancel()
-        pages = []
-        error = nil
-        nextCursor = nil
-        creditsSpent = 0
-        phase = .idle
     }
 
     private func absorb(_ result: APIResult) {

@@ -268,7 +268,7 @@ struct ParseTool: View {
     }
 
     private func run() {
-        guard let fileURL, let data = try? Data(contentsOf: fileURL) else { return }
+        guard let fileURL else { return }
         var q: [URLQueryItem] = [
             .init(name: "includeLinks", value: links ? "true" : "false"),
             .init(name: "includeImages", value: images ? "true" : "false"),
@@ -278,7 +278,11 @@ struct ParseTool: View {
         let ext = fileURL.pathExtension.lowercased()
         if !ext.isEmpty { q.append(.init(name: "extension", value: ext)) }
         let client = model.client
-        runner.run { _ in try await client.upload("parse", query: q, data: data, contentType: "application/octet-stream") }
+        runner.run { _ in
+            // Read here, not up front, so an unreadable file shows in the error card.
+            let data = try Data(contentsOf: fileURL)
+            return try await client.upload("parse", query: q, data: data, contentType: "application/octet-stream")
+        }
     }
 }
 

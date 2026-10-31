@@ -109,6 +109,21 @@ enum Tool: String, CaseIterable, Identifiable {
         case .parse: "Parse"
         }
     }
+
+    /// Shown in the results pane while a request runs.
+    var loadingLabel: String {
+        switch self {
+        case .peopleSearch, .webSearch, .news, .companySearch: "Searching…"
+        case .peopleEnrich: "Identifying…"
+        case .answers: "Researching…"
+        case .scrape: "Scraping…"
+        case .map: "Mapping…"
+        case .crawl: "Crawling…"
+        case .brand: "Looking up…"
+        case .styleguide: "Extracting…"
+        case .parse: "Parsing…"
+        }
+    }
 }
 
 /// A request from one tool to open another with fields filled in (e.g. "look up this company's brand").
